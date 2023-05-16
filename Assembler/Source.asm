@@ -2,6 +2,56 @@
 .model flat
 .code
 
+_sin_taylor proc
+
+; dword ptr[esp+8]			; epsilon 
+
+mov dword ptr[esp-4], 2 ; const = 2 in [esp-4]
+mov dword ptr[esp-8], 1 ; numerator initial
+finit
+fld dword ptr[esp+4]			; st1 = x_in_rad
+fldz							; st0 = 0 (sum) 
+
+
+mov ecx, 1 ; count_iter
+
+whileMark:
+ xor eax, eax
+ xor edx, edx
+ xor ebx, ebx
+ ; sum: st0 + st2
+	fadd ST(0), ST(1)
+	; fxch ST(1)
+ ; edx --> 2 * ecx * (2 * ecx + 1):
+	mov eax, ecx				; eax = ecx 
+	mul dword ptr[esp-4]        ; eax = 2 * ecx
+
+	mov dword ptr[esp-12], eax   ; eax in [esp-8]
+
+	add eax, 1					; eax += 1
+
+	mul dword ptr[esp-12]		; eax *= [esp-8]
+	mov dword ptr[esp-12], eax
+	
+	;fild dword ptr[esp-12]		; st4
+
+
+;	
+;	
+; st3 --> st1 * (-1) * st1 * st1
+; st4 --> st3 / edx
+; add ecx, 1
+; cmp abs(st4)
+; 
+
+
+ret
+
+
+
+_sin_taylor endp
+
+
 _bumble_sort proc
 
 mainMark:
