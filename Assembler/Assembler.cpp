@@ -31,7 +31,7 @@ int main()
     }*/
     int x = 45;
     float arg = M_PI * x / 180;
-    float epsilon = 0.0001;
+    float epsilon = 0.01;
     std::cout << "x in rad: " << arg << std::endl;
     std::cout << "Sin(x) = " << sin_taylor(arg, epsilon) << std::endl;
 }

@@ -6,8 +6,10 @@ _sin_taylor proc
 
 ; dword ptr[esp+8]			; epsilon 
 
+;mov dword ptr[esp-12], -1 ; const = -1
 mov dword ptr[esp-4], 2 ; const = 2 in [esp-4]
-mov dword ptr[esp-8], 1 ; numerator initial
+; mov dword ptr[esp-8], 1 ; numerator initial
+
 finit
 fld dword ptr[esp+4]			; st1 = x_in_rad
 fldz							; st0 = 0 (sum) 
@@ -16,36 +18,82 @@ fldz							; st0 = 0 (sum)
 mov ecx, 1 ; count_iter
 
 whileMark:
+
+
+
+
  xor eax, eax
- xor edx, edx
  xor ebx, ebx
- ; sum: st0 + st2
-	fadd ST(0), ST(1)
-	; fxch ST(1)
- ; edx --> 2 * ecx * (2 * ecx + 1):
-	mov eax, ecx				; eax = ecx 
-	mul dword ptr[esp-4]        ; eax = 2 * ecx
+ xor edx, edx
 
-	mov dword ptr[esp-12], eax   ; eax in [esp-8]
-
-	add eax, 1					; eax += 1
-
-	mul dword ptr[esp-12]		; eax *= [esp-8]
-	mov dword ptr[esp-12], eax
 	
-	;fild dword ptr[esp-12]		; st4
+	fadd ST(0), ST(1)				; sum: st0 + st1
+	
+	fld1							; st0 = 1; st1 = sum ; st2 = x_in_rad
+
+	; edx --> 2 * ecx * (2 * ecx + 1):
+			mov eax, ecx					; eax = ecx 
+			mul dword ptr[esp-4]			; eax = 2 * ecx
+
+			mov dword ptr[esp-8], eax		; eax in [esp-8]
+
+			add eax, 1						; eax += 1
+
+			mul dword ptr[esp-8]			; eax *= [esp-8]
+			mov dword ptr[esp-8], eax
+	
+			;fild dword ptr[esp-8]			; st0 = denominator | st1 = numerator | st2 = sum | st3 = x_in_rad
+
+			; st0 --> st2 * (-1) * st2 * st2
+			fmul ST(0), ST(2)
+			fmul ST(0), ST(2)
+			fchs
+			fmul ST(0), ST(2)
+			fild dword ptr[esp-8]			
+			fxch ST(1)						; st0 = denominator | st1 = numerator | st2 = sum | st3 = x_in_rad
+			fdiv ST(0), ST(1)				; st0 = new x_in_rad
+			;cmp ecx, 1
+				;je endMark
+
+			fxch ST(2)
+			fstp dword ptr[esp-12]
+			fstp dword ptr[esp-12]
+			add ecx, 1
 
 
-;	
-;	
-; st3 --> st1 * (-1) * st1 * st1
-; st4 --> st3 / edx
-; add ecx, 1
-; cmp abs(st4)
-; 
+
+			fstp dword ptr[esp-12]      ; pop st0
+			fld dword ptr[esp-12]		; add x(i)
+			
+			fld dword ptr[esp+8]		; add epsilon
+
+			fld dword ptr[esp-12]		; add x(i)
+			fabs						; st0 = abs(st0)
+
+			fcom ST(1)
+			sahf
+
+			ja correctMark
+
+			fstp dword ptr[esp-12]
+			fstp dword ptr[esp-12]
+			;fxch ST(1)
+			ret
 
 
-ret
+endMark:
+	;fxch ST(1)
+	ret
+
+correctMark:
+	fstp dword ptr[esp-12]
+	fstp dword ptr[esp-12]
+	fxch ST(1)
+	jmp whileMark
+
+
+
+
 
 
 
