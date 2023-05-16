@@ -1,0 +1,21 @@
+Microsoft (R) Macro Assembler (x64) Version 14.31.31107.0   10/12/22 14:28:45
+Source.asm						     Page 1 - 1
+
+
+				.686
+Source.asm(1) : error A2008:syntax error : .
+				.model flat
+Source.asm(2) : error A2008:syntax error : .
+ 00000000			.code
+
+
+
+
+				end
+Microsoft (R) Macro Assembler (x64) Version 14.31.31107.0   10/12/22 14:28:45
+Source.asm						     Symbols 2 - 1
+
+
+
+	   0 Warnings
+	   2 Errors
