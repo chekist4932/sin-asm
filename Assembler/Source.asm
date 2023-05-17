@@ -3,15 +3,18 @@
 .code
 
 _sin_taylor proc
+
 xor ebx, ebx
-mov ebx, dword ptr[esp+8]
+xor ecx, ecx
 mov dword ptr[esp-4], 2 ; const = 2 in [esp-4]
+mov ebx, dword ptr[esp+8]
+mov ecx, 1 ; count_iter
+
 
 finit
 fld dword ptr[esp+4]			; st1 = x_in_rad
 fldz							; st0 = 0 (sum) 
 
-mov ecx, 1 ; count_iter
 
 whileMark:
 
@@ -20,7 +23,7 @@ whileMark:
 	fadd ST(0), ST(1)				; sum: st0 + st1
 	fld1							; st0 = 1; st1 = sum ; st2 = x_in_rad
 
-	; edx --> 2 * ecx * (2 * ecx + 1):
+	; eax --> 2 * ecx * (2 * ecx + 1):
 			mov eax, ecx					; eax = ecx 
 			mul dword ptr[esp-4]			; eax = 2 * ecx
 
@@ -29,26 +32,26 @@ whileMark:
 			add eax, 1						; eax += 1
 
 			mul dword ptr[esp-8]			; eax *= [esp-8]
-			mov dword ptr[esp-8], eax
+			mov dword ptr[esp-8], eax		; eax in [esp-8]
 
 
 			; st0 --> st2 * (-1) * st2 * st2
 			fmul ST(0), ST(2)
 			fmul ST(0), ST(2)
-			fchs
-			fmul ST(0), ST(2)
-			fild dword ptr[esp-8]			
+			fchs							; -x^2 in st0
+			fmul ST(0), ST(2)				; x * -x^2
+			fild dword ptr[esp-8]			; numerator in stack
 			fxch ST(1)						; st0 = denominator | st1 = numerator | st2 = sum | st3 = x_in_rad
-			fdiv ST(0), ST(1)				; st0 = new x_in_rad
+			fdiv ST(0), ST(1)				; st0 = new x_in_rad | st1 = numerator | st2 = sum | st3 = x_in_rad
 			
-			fxch ST(3)
-			fstp dword ptr[esp-12]
-			fstp dword ptr[esp-12]
-			add ecx, 1
+			fxch ST(3)						; st0 = old x_in_rad | st1 = numerator | st2 = sum | st3 = new x_in_rad
+			fstp dword ptr[esp-12]			; pop old x_in_rad
+			fstp dword ptr[esp-12]			; pop numeartor ==> st0 = sum | st1 = new x_in_rad
+			add ecx, 1						; counter_iter += 1
 
 			cmp ecx, ebx
-				jb whileMark  ; ecx < ebx | ebx = n
-				je endMark
+				jb whileMark	; ecx < ebx | ebx = n
+				je endMark		; ecx = ebx
 
 
 endMark:
