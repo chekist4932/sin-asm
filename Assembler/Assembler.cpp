@@ -9,7 +9,8 @@ int gen_array(int *, int);
 extern "C"
 int bumble_sort(int *, int);
 extern "C"
-float sin_taylor(float, float);
+//float sin_taylor(float, float);
+float sin_taylor(float, int);
 
 
 int main()
@@ -29,9 +30,10 @@ int main()
     {
         std::cout << arr[i] << " ";
     }*/
-    int x = 45;
+    int x = 30;
     float arg = M_PI * x / 180;
     float epsilon = 0.01;
+    int n = 4;
     std::cout << "x in rad: " << arg << std::endl;
-    std::cout << "Sin(x) = " << sin_taylor(arg, epsilon) << std::endl;
+    std::cout << "Sin(x) = " << sin_taylor(arg, n) << std::endl;
 }
