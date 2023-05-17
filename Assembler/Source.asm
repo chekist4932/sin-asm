@@ -5,7 +5,6 @@
 _sin_taylor proc
 xor ebx, ebx
 mov ebx, dword ptr[esp+8]
-
 mov dword ptr[esp-4], 2 ; const = 2 in [esp-4]
 
 finit
@@ -16,9 +15,7 @@ mov ecx, 1 ; count_iter
 
 whileMark:
 
-
 	xor eax, eax
-	xor edx, edx
 	
 	fadd ST(0), ST(1)				; sum: st0 + st1
 	fld1							; st0 = 1; st1 = sum ; st2 = x_in_rad
@@ -50,43 +47,17 @@ whileMark:
 			add ecx, 1
 
 			cmp ecx, ebx
-				jb whileMark  ; ecx < 3
+				jb whileMark  ; ecx < ebx | ebx = n
 				je endMark
-
-
-
-
-			;fstp dword ptr[esp-12]      ; pop st0
-			;fld dword ptr[esp-12]		; add x(i)
-			
-			;fld dword ptr[esp+8]		; add epsilon
-
-			;fld dword ptr[esp-12]		; add x(i)
-			;fabs						; st0 = abs(st0)
-
-			;fcom ST(1)
-			;sahf
-
-			;ja correctMark
-			;ret
 
 
 endMark:
 	ret
 
-correctMark:
-	fstp dword ptr[esp-12]
-	fstp dword ptr[esp-12]
-	fxch ST(1)
-	jmp whileMark
-
-
-
-
-
-
 
 _sin_taylor endp
+
+
 
 
 _bumble_sort proc
