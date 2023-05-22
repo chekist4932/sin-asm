@@ -2,7 +2,7 @@
 .model flat
 .code
 
-_sin_taylor proc
+_sin_taylor_asm proc
 
 xor ebx, ebx
 xor ecx, ecx
@@ -58,7 +58,7 @@ endMark:
 	ret
 
 
-_sin_taylor endp
+_sin_taylor_asm endp
 
 
 

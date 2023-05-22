@@ -1,3 +1,4 @@
-﻿  Assembler.cpp
+﻿  Assembling Source.asm...
+  Assembler.cpp
 C:\Users\GEORG\Desktop\GEORG\Visual\CompHard\Assembler\Assembler\Assembler.cpp(33,15): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
   Assembler.vcxproj -> C:\Users\GEORG\Desktop\GEORG\Visual\CompHard\Assembler\Debug\Assembler.exe
